@@ -1,5 +1,5 @@
 #![feature(concat_idents, exclusive_range_pattern)]
-#![cfg_attr(target_feature = "sse", feature(stdarch, stdsimd))]
+#![cfg_attr(target_feature = "sse", feature(stdarch_x86_mm_shuffle))]
 #![cfg_attr(target_arch = "wasm32", feature(simd_wasm64))]
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
@@ -83,33 +83,33 @@ pub enum LlmlImpl {
     WASM,
 
     /// Naive implementation with arrays. Useful as a backup if no other method is available
-    NAIVE
+    NAIVE,
 }
 
 impl LlmlImpl {
-    pub const CURRENT : Self = current_impl();
+    pub const CURRENT: Self = current_impl();
 
     #[inline]
-    pub const fn is_64bit (&self) -> bool {
+    pub const fn is_64bit(&self) -> bool {
         matches!(self, LlmlImpl::NEON)
     }
 
     #[inline]
-    pub const fn is_128bit (&self) -> bool {
+    pub const fn is_128bit(&self) -> bool {
         match self {
             LlmlImpl::NAIVE => false,
-            _ => true
+            _ => true,
         }
     }
 
     #[inline]
-    pub const fn is_256bit (&self) -> bool {
+    pub const fn is_256bit(&self) -> bool {
         matches!(self, LlmlImpl::AVX)
     }
 }
 
 #[inline]
-pub const fn current_impl () -> LlmlImpl {
+pub const fn current_impl() -> LlmlImpl {
     cfg_if::cfg_if! {
         if #[cfg(feature = "force_naive")] {
             LlmlImpl::NAIVE

@@ -1,14 +1,16 @@
-use llml_simd_proc::*;
 use core::ops::*;
+use llml_simd_proc::*;
 use std::mem::MaybeUninit;
 
 #[inline]
-fn array<T, F: Fn(usize) -> T, const N: usize> (f: F) -> [T; N] {
-    let mut array = MaybeUninit::<[T;N]>::uninit();
-    let ptr : *mut T = array.as_mut_ptr().cast();
+fn array<T, F: Fn(usize) -> T, const N: usize>(f: F) -> [T; N] {
+    let mut array = MaybeUninit::<[T; N]>::uninit();
+    let ptr: *mut T = array.as_mut_ptr().cast();
 
     for i in 0..N {
-        unsafe { ptr.add(i).write(f(i)); }
+        unsafe {
+            ptr.add(i).write(f(i));
+        }
     }
 
     unsafe { array.assume_init() }
@@ -126,7 +128,7 @@ macro_rules! impl_naive {
                 pub fn new (a: [$ty;$len]) -> Self {
                     Self(a)
                 }
-            
+
                 /// Creates a new vector with all lines filled with the provided value
                 #[inline(always)]
                 pub fn filled_with (a: $ty) -> Self {
@@ -138,7 +140,7 @@ macro_rules! impl_naive {
                 pub fn into_array (self) -> [$ty;$len] {
                     self.0
                 }
-                
+
                 /// Loads values from the pointer into the SIMD vector
                 #[inline(always)]
                 pub unsafe fn load (ptr: *const $ty) -> Self {
@@ -310,23 +312,22 @@ macro_rules! impl_naive {
 }
 
 impl_naive!(
-    [f32;2] as f32x2,
-    [f32;3] as f32x3,
-    [f32;4] as f32x4,
-    [f32;6] as f32x6,
-    [f32;8] as f32x8,
-    [f32;10] as f32x10,
-    [f32;12] as f32x12,
-    [f32;14] as f32x14,
-    [f32;16] as f32x16,
-
-    [f64;2] as f64x2,
-    [f64;3] as f64x3,
-    [f64;4] as f64x4,
-    [f64;6] as f64x6,
-    [f64;8] as f64x8,
-    [f64;10] as f64x10,
-    [f64;12] as f64x12,
-    [f64;14] as f64x14,
-    [f64;16] as f64x16
+    [f32; 2] as f32x2,
+    [f32; 3] as f32x3,
+    [f32; 4] as f32x4,
+    [f32; 6] as f32x6,
+    [f32; 8] as f32x8,
+    [f32; 10] as f32x10,
+    [f32; 12] as f32x12,
+    [f32; 14] as f32x14,
+    [f32; 16] as f32x16,
+    [f64; 2] as f64x2,
+    [f64; 3] as f64x3,
+    [f64; 4] as f64x4,
+    [f64; 6] as f64x6,
+    [f64; 8] as f64x8,
+    [f64; 10] as f64x10,
+    [f64; 12] as f64x12,
+    [f64; 14] as f64x14,
+    [f64; 16] as f64x16
 );
