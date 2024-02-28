@@ -3,7 +3,7 @@ macro_rules! impl_scal_arith {
         $(
             impl $trait<$ty> for $target {
                 type Output = Self;
-    
+
                 #[inline(always)]
                 fn $fun (self, rhs: $ty) -> Self::Output {
                     self.$fun(Into::<$target>::into(rhs))
@@ -12,7 +12,7 @@ macro_rules! impl_scal_arith {
 
             impl $trait<$target> for $ty {
                 type Output = $target;
-    
+
                 #[inline(always)]
                 fn $fun (self, rhs: $target) -> Self::Output {
                     Into::<$target>::into(self).$fun(rhs)
@@ -171,7 +171,7 @@ macro_rules! impl_composite {
         $(
             impl $trait for $target {
                 type Output = Self;
-    
+
                 #[inline(always)]
                 fn $fun (self, rhs: Self) -> Self::Output {
                     Self(
@@ -189,7 +189,7 @@ macro_rules! impl_composite {
         $(
             impl $trait for $target {
                 type Output = Self;
-    
+
                 #[inline(always)]
                 fn $fun (self, rhs: Self) -> Self::Output {
                     Self(
@@ -208,7 +208,7 @@ macro_rules! impl_composite {
         $(
             impl $trait for $target {
                 type Output = Self;
-    
+
                 #[inline(always)]
                 fn $fun (self, rhs: Self) -> Self::Output {
                     Self(
@@ -232,7 +232,7 @@ macro_rules! impl_composite {
             #[assign_targets(Add, Sub, Mul, Div)]
             #[assign_rhs(Self, $ty)]
             pub struct $name(pub(crate) $x, pub(crate) $y);
-    
+
             impl_composite!(
                 @arith2 $name, $ty,
                 Add, add,
@@ -291,15 +291,15 @@ macro_rules! impl_composite {
                     let first = self.0.zip(rhs.0);
                     let last;
                     unsafe {
-                        let alpha = *((addr_of!(self) as *const $ty).add(D1) as *const $y);
-                        let beta = *((addr_of!(rhs) as *const $ty).add(D1) as *const $y);
+                        let alpha = core::ptr::read_unaligned((addr_of!(self) as *const $ty).add(D1) as *const $y);
+                        let beta = core::ptr::read_unaligned((addr_of!(rhs) as *const $ty).add(D1) as *const $y);
                         last = alpha.zip(beta);
                     }
 
                     Self(first, last)
                 }
             }
-    
+
             impl From<$ty> for $name {
                 #[inline(always)]
                 fn from(x: $ty) -> Self {
@@ -317,7 +317,7 @@ macro_rules! impl_composite {
             #[assign_targets(Add, Sub, Mul, Div)]
             #[assign_rhs(Self, $ty)]
             pub struct $name(pub(crate) $x, pub(crate) $y, pub(crate) $z);
-    
+
             impl_composite!(
                 @arith3 $name, $ty,
                 Add, add,
@@ -400,12 +400,12 @@ macro_rules! impl_composite {
                     let second;
                     let last;
                     unsafe {
-                        let alpha = *((addr_of!(self) as *const $ty).add(D1) as *const $y);
-                        let beta = *((addr_of!(rhs) as *const $ty).add(D1) as *const $y);
+                        let alpha = core::ptr::read_unaligned((addr_of!(self) as *const $ty).add(D1) as *const $y);
+                        let beta = core::ptr::read_unaligned((addr_of!(rhs) as *const $ty).add(D1) as *const $y);
                         second = alpha.zip(beta);
 
-                        let alpha = *((addr_of!(self) as *const $ty).add(D2) as *const $z);
-                        let beta = *((addr_of!(rhs) as *const $ty).add(D2) as *const $z);
+                        let alpha = core::ptr::read_unaligned((addr_of!(self) as *const $ty).add(D2) as *const $z);
+                        let beta = core::ptr::read_unaligned((addr_of!(rhs) as *const $ty).add(D2) as *const $z);
                         last = alpha.zip(beta);
                     }
 
@@ -430,7 +430,7 @@ macro_rules! impl_composite {
             #[assign_targets(Add, Sub, Mul, Div)]
             #[assign_rhs(Self, $ty)]
             pub struct $name(pub(crate) $x, pub(crate) $y, pub(crate) $z, pub(crate) $w);
-    
+
             impl_composite!(
                 @arith4 $name, $ty,
                 Add, add,
@@ -497,23 +497,23 @@ macro_rules! impl_composite {
                     let third;
                     let last;
                     unsafe {
-                        let alpha = *((addr_of!(self) as *const $ty).add(D1) as *const $y);
-                        let beta = *((addr_of!(rhs) as *const $ty).add(D1) as *const $y);
+                        let alpha = core::ptr::read_unaligned((addr_of!(self) as *const $ty).add(D1) as *const $y);
+                        let beta = core::ptr::read_unaligned((addr_of!(rhs) as *const $ty).add(D1) as *const $y);
                         second = alpha.zip(beta);
 
-                        let alpha = *((addr_of!(self) as *const $ty).add(D2) as *const $z);
-                        let beta = *((addr_of!(rhs) as *const $ty).add(D2) as *const $z);
+                        let alpha = core::ptr::read_unaligned((addr_of!(self) as *const $ty).add(D2) as *const $z);
+                        let beta = core::ptr::read_unaligned((addr_of!(rhs) as *const $ty).add(D2) as *const $z);
                         third = alpha.zip(beta);
 
-                        let alpha = *((addr_of!(self) as *const $ty).add(D3) as *const $w);
-                        let beta = *((addr_of!(rhs) as *const $ty).add(D3) as *const $w);
+                        let alpha = core::ptr::read_unaligned((addr_of!(self) as *const $ty).add(D3) as *const $w);
+                        let beta = core::ptr::read_unaligned((addr_of!(rhs) as *const $ty).add(D3) as *const $w);
                         last = alpha.zip(beta);
                     }
 
                     Self(first, second, third, last)
                 }
             }
-    
+
             impl From<$ty> for $name {
                 #[inline(always)]
                 fn from(x: $ty) -> Self {
