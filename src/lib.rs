@@ -1,4 +1,3 @@
-#![feature(concat_idents, exclusive_range_pattern)]
 #![cfg_attr(target_feature = "sse", feature(stdarch_x86_mm_shuffle))]
 #![cfg_attr(target_arch = "wasm32", feature(simd_wasm64))]
 #![cfg_attr(not(feature = "use_std"), no_std)]

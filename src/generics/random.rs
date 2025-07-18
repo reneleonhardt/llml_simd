@@ -1,11 +1,11 @@
 use crate::float::single::*;
 use crate::float::double::*;
-use rand::{prelude::Distribution, distributions::Standard};
+use rand::{prelude::Distribution, distr::StandardUniform};
 
 macro_rules! impl_rand {
     ($([$ty:ident;$len:literal] as $target:ident),+) => {
         $(
-            impl Distribution<$target> for Standard {
+            impl Distribution<$target> for StandardUniform {
                 #[inline(always)]
                 fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> $target {
                     <[$ty;$len] as Into<$target>>::into(self.sample(rng))

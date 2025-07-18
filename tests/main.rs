@@ -1,4 +1,3 @@
-#![feature(concat_idents)]
 use llml_simd::float::single::*;
 use llml_simd::float::double::*;
 use core::ops::*;
@@ -16,7 +15,7 @@ macro_rules! test_other {
                 [f32;12] as f32x12,
                 [f32;14] as f32x14,
                 [f32;16] as f32x16,
-            
+
                 [f64;2] as f64x2,
                 [f64;4] as f64x4,
                 [f64;6] as f64x6,
@@ -38,11 +37,11 @@ macro_rules! test_other {
                 let naive = alpha.into_iter()
                     .zip(beta.into_iter())
                     .map(|(x, y)| x.$fun(y));
-    
+
                 let alpha = <$target>::new(alpha);
                 let beta = <$target>::new(beta);
                 let simd = alpha.$name(beta);
-    
+
                 Into::<[$ty;$len]>::into(simd)
                     .into_iter()
                     .zip(naive)
@@ -68,7 +67,7 @@ macro_rules! test_mappings {
                 [f32;12] as f32x12,
                 [f32;14] as f32x14,
                 [f32;16] as f32x16,
-            
+
                 [f64;2] as f64x2,
                 [f64;4] as f64x4,
                 [f64;6] as f64x6,
@@ -88,10 +87,10 @@ macro_rules! test_mappings {
                 let alpha : [$ty;$len] = random();
                 let naive = alpha.into_iter()
                     .map(|x| x.$fun());
-    
+
                 let alpha = <$target>::new(alpha);
                 let simd = alpha.$name();
-    
+
                 Into::<[$ty;$len]>::into(simd)
                     .into_iter()
                     .zip(naive)
@@ -117,7 +116,7 @@ macro_rules! test_horiz {
                 [f32;12] as f32x12,
                 [f32;14] as f32x14,
                 [f32;16] as f32x16,
-            
+
                 [f64;2] as f64x2,
                 [f64;4] as f64x4,
                 [f64;6] as f64x6,
@@ -287,7 +286,7 @@ macro_rules! test_mul_add {
 }
 
 test_other!(
-    add, sub, mul, div, 
+    add, sub, mul, div,
     min as vmin, max as vmax
 );
 
@@ -310,7 +309,7 @@ pub fn index () {
         [f32;12] as f32x12,
         [f32;14] as f32x14,
         [f32;16] as f32x16,
-    
+
         [f64;2] as f64x2,
         [f64;4] as f64x4,
         [f64;6] as f64x6,
@@ -333,7 +332,7 @@ pub fn eq () {
         [f32;12] as f32x12,
         [f32;14] as f32x14,
         [f32;16] as f32x16,
-    
+
         [f64;2] as f64x2,
         [f64;4] as f64x4,
         [f64;6] as f64x6,
@@ -357,7 +356,7 @@ pub fn rnd () {
         [f32;12] as f32x12,
         [f32;14] as f32x14,
         [f32;16] as f32x16,
-    
+
         [f64;2] as f64x2,
         [f64;4] as f64x4,
         [f64;6] as f64x6,
@@ -381,7 +380,7 @@ pub fn serialize () {
         [f32;12] as f32x12,
         [f32;14] as f32x14,
         [f32;16] as f32x16,
-    
+
         [f64;2] as f64x2,
         [f64;4] as f64x4,
         [f64;6] as f64x6,
@@ -404,7 +403,7 @@ pub fn clone () {
         [f32;12] as f32x12,
         [f32;14] as f32x14,
         [f32;16] as f32x16,
-    
+
         [f64;2] as f64x2,
         [f64;4] as f64x4,
         [f64;6] as f64x6,
@@ -427,7 +426,7 @@ pub fn into () {
         [f32;12] as f32x12,
         [f32;14] as f32x14,
         [f32;16] as f32x16,
-    
+
         [f64;2] as f64x2,
         [f64;4] as f64x4,
         [f64;6] as f64x6,
@@ -450,7 +449,7 @@ pub fn from () {
         [f32;12] as f32x12,
         [f32;14] as f32x14,
         [f32;16] as f32x16,
-    
+
         [f64;2] as f64x2,
         [f64;4] as f64x4,
         [f64;6] as f64x6,
@@ -473,7 +472,7 @@ pub fn zip () {
         [f32;12] as f32x12,
         [f32;14] as f32x14,
         [f32;16] as f32x16,
-    
+
         [f64;2] as f64x2,
         [f64;4] as f64x4,
         [f64;6] as f64x6,
@@ -496,7 +495,7 @@ pub fn fma () {
         [f32;12] as f32x12,
         [f32;14] as f32x14,
         [f32;16] as f32x16,
-    
+
         [f64;2] as f64x2,
         [f64;4] as f64x4,
         [f64;6] as f64x6,

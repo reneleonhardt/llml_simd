@@ -2,7 +2,7 @@ use criterion::{criterion_group, criterion_main, Criterion};
 use llml_simd::float::{single::*, double::*};
 use llml_simd_proc::*;
 use core::ops::*;
-use rand::random;
+use rand::Rng;
 
 macro_rules! bench_other {
     ($($fun:ident),+) => {
@@ -16,7 +16,7 @@ macro_rules! bench_other {
                 [f32;12] as f32x12,
                 [f32;14] as f32x14,
                 [f32;16] as f32x16,
-            
+
                 [f64;2] as f64x2,
                 [f64;4] as f64x4,
                 [f64;6] as f64x6,
@@ -33,8 +33,9 @@ macro_rules! bench_other {
         pub fn $fun(c: &mut Criterion) {
             $(
                 c.bench_function(concat!(stringify!($fun), " for ", stringify!($target)), |b| {
-                    let alpha : $target = random();
-                    let beta : $target = random();
+                    let mut rng = rand::rng();
+                    let alpha : $target = rng.random();
+                    let beta : $target = rng.random();
                     b.iter(|| arr![|i| alpha.$fun(beta); 1000])
                 });
             )*
@@ -54,7 +55,7 @@ macro_rules! bench_horiz {
                 [f32;12] as f32x12,
                 [f32;14] as f32x14,
                 [f32;16] as f32x16,
-            
+
                 [f64;2] as f64x2,
                 [f64;4] as f64x4,
                 [f64;6] as f64x6,
@@ -90,7 +91,7 @@ macro_rules! bench_fma {
             [f32;12] as f32x12,
             [f32;14] as f32x14,
             [f32;16] as f32x16,
-        
+
             [f64;2] as f64x2,
             [f64;4] as f64x4,
             [f64;6] as f64x6,
@@ -120,7 +121,7 @@ bench_other!(add, sub, mul, div, vmin, vmax);
 bench_horiz!(min, max, sum, prod);
 bench_fma!();
 
-criterion_group!(benches, 
+criterion_group!(benches,
     add, sub, mul, div, vmin, vmax,
     min, max, sum, prod, mul_add
 );

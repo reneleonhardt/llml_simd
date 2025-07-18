@@ -1,9 +1,4 @@
-use std::any::Any;
-use std::borrow::Borrow;
-use std::ops::Deref;
-
 use proc_macro2::{Literal, TokenStream, Span};
-use quote::__private::ext::RepToTokensExt;
 use quote::{quote, ToTokens};
 use syn::*;
 
@@ -19,12 +14,12 @@ pub fn assign_rhs (_input: proc_macro::TokenStream, alt: proc_macro::TokenStream
 
 #[proc_macro_derive(Assign)]
 pub fn assign_macro (input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let DeriveInput { 
-        generics, 
-        attrs, 
-        vis: _, 
-        ident, 
-        data
+    let DeriveInput {
+        generics,
+        attrs,
+        vis: _,
+        ident,
+        data: _
     } = parse_macro_input!(input as DeriveInput);
 
     let targets = attrs.iter()
@@ -77,8 +72,8 @@ fn assign_macro_impl (target: Ident, generics: Generics, original: Ident, rhs: I
             #[inline(always)]
             fn #assign_fun (&mut self, rhs: #rhs) {
                 *self = #original::<#rhs>::#original_fun(*self, rhs)
-            } 
-        } 
+            }
+        }
     }
 }
 
@@ -96,7 +91,7 @@ impl Parse for ArrInput {
     fn parse(input: parse::ParseStream) -> Result<Self> {
         let expr = input.parse::<Expr>()?;
         input.parse::<Token![;]>()?;
-            
+
         Ok(ArrInput {
             expr,
             len: input.parse::<Lit>()?
@@ -117,7 +112,7 @@ pub fn arr (input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         .map(|i| match input.expr.clone() {
             Expr::Lit(lit) => lit.into_token_stream(),
             Expr::Closure(c) => {
-                assert!(c.inputs.len() == 1 && matches!(&c.inputs[0], Ident), "Invalid expresion");
+                assert!(c.inputs.len() == 1 && matches!(&c.inputs[0], Pat::Ident(_)), "Invalid expression");
                 let ident = match &c.inputs[0] {
                     Pat::Ident(ident) => ident.clone().ident,
                     _ => panic!("Input is not an identity")
